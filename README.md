@@ -12,7 +12,9 @@ RDFIngest - A simple tool for ingesting local and remote RDF data sources into a
 
 ## Usage
 
-RDFIngest reads two YAML files, a config file for obtaining triplestore credentials and a registry which defines the RDF sources to be ingested.
+RDFIngest reads two YAML files: 
+- a config file for obtaining triplestore credentials and 
+- a registry which defines the RDF sources to be ingested.
 
 #### Example config:
 ```yaml
