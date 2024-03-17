@@ -2,7 +2,7 @@
 
 # RDFIngest
 
-RDFIngest - A simple tool for automatically ingesting local and/or remote RDF data sources into a triplestore.
+RDFIngest - A simple tool for ingesting local and remote RDF data sources into a triplestore.
 
 ## Requirements
 
