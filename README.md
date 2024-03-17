@@ -7,3 +7,11 @@ RDFIngest - A simple tool for automatically ingesting local and/or remote RDF da
 ## Requirements
 
 * Python >= 3.11
+
+## Installation
+
+## Usage
+
+### CLI
+
+### RDFIngest class
