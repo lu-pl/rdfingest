@@ -1,0 +1,4 @@
+service:
+  endpoint: "https://sometriplestore.fun/endpoint"
+  user: "admin"
+  password: "supersecret123"

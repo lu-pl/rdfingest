@@ -1,0 +1,5 @@
+
+
+/home/upgrd/projects/python-projects/rdfingest/tests/tests_models/test_config_model.py
+
+from tests.tests_models.model_test_data import config_model_test_data as config_data

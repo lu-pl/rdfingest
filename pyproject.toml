@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "rdfingest"
+version = "0.1.0"
+description = ""
+authors = ["Lukas Plank <lupl@tuta.io>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.6.4"
+rdflib = "^7.0.0"
+lodkit = "^0.1.13"
+requests = "^2.31.0"
+loguru = "^0.7.2"
+pyyaml = "^6.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+addopts = [
+	"--strict-markers",
+	"--strict-config",
+	"-ra"
+]
+
+testpaths = "tests"
+
+markers = [
+	"remote: Indicate tests against actual remote sources."
+]
