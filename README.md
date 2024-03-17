@@ -55,8 +55,7 @@ For contextless RDF resources all graphs are merged into a named graph identifie
 
 If the source field references both contextless *and* contextualized RDF sources, contextless sources are merged into a single named graph and added to the initial context graph.  
 
-
-Note: RDFIngest also accepts local RDF data sources.
+The tool accepts both local and remote RDF data sources.
 
 ### CLI
 
