@@ -49,6 +49,13 @@ graphs:
     graph_id: https://somenamedgraph.id
 ```
 
+For contextless RDF resources all graphs are merged to a named graph identified by `graph_id`. Quad formats obviously do not require a graph_id field.  
+If the source field references contextless *and* contextualized RDF sources, contextless sources are merged into a single named graph and added to the contextualized graph.  
+This should be intuitiv.
+
+
+Note: RDFIngest also accepts local RDF data sources.
+
 ### CLI
 
 ### RDFIngest class
