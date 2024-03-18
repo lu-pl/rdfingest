@@ -2,6 +2,7 @@
 
 # RDFIngest
 ![tests](https://github.com/lu-pl/rdfingest/actions/workflows/tests.yaml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/lu-pl/rdfingest/badge.svg?branch=main)](https://coveralls.io/github/lu-pl/rdfingest?branch=main)
 [![license: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
