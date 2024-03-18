@@ -9,7 +9,7 @@ from collections.abc import Callable
 import yaml
 from pydantic import BaseModel, ValidationError
 
-from rdfingest.models import ConfigModel, RegistryModel
+from rdfingest.models import ConfigModel, RegistryModel, InvalidRegistryEntry
 
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
@@ -26,7 +26,7 @@ def yaml_loader(path: str | Path, model: type[ModelType]) -> ModelType:
 
     try:
         data = model(**_data)
-    except ValidationError:
+    except (ValidationError, InvalidRegistryEntry):
         raise YAMLValidationError
 
     return data
