@@ -1,4 +1,4 @@
-"""Help strings for the RDFIngest CLI."""
+"""Help messages for the RDFIngest CLI."""
 
-config_help = """<Config help>"""
-registry_help = """<Registry help>"""
+config_help = "<config help>"
+registry_help = "<registry help>"

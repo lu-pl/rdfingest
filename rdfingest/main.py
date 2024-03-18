@@ -1,25 +1,39 @@
 """Very simple Typer CLI for RDFIngest."""
 
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Union
 
 import typer
 
 from loguru import logger
 
 from rdfingest.cli_help import config_help, registry_help
-from rdfingest.rdfingest import RDFIngest
+from rdfingest.ingest import RDFIngest
 
 
 def main(
         config: Annotated[
-            Path | str,
-            typer.Option(help=config_help)
-        ] = "./config.yaml",
+            Path,
+            typer.Option(
+                help=config_help,
+                exists=True,
+                file_okay=True,
+                dir_okay=False,
+                readable=True,
+                resolve_path = True
+            )
+        ] = Path("./config.yaml"),
         registry: Annotated[
-            Path | str,
-            typer.Option(help=registry_help)
-        ] = "./registry.yaml"
+            Path,
+            typer.Option(
+                help=registry_help,
+                exists=True,
+                file_okay=True,
+                dir_okay=False,
+                readable=True,
+                resolve_path = True
+            )
+        ] = Path("./registry.yaml")
 ):
     """RDFIngest CLI."""
     logger.info("Initializing RDFIngest.")
