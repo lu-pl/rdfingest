@@ -68,9 +68,9 @@ The tool accepts both local and remote RDF data sources.
 
 ### RDFIngest class
 
-Invoke `run_ingest` on an `RDFIngest` instance.
+Point an `RDFIngest` instance to a config file and a registry and invoke `run_ingest`.
 
 ```python
-rdfingest = RDFIngest()
+rdfingest = RDFIngest(registry="./registry.yaml", config="./config.yaml")
 rdfingest.run_ingest()
 ```
