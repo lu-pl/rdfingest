@@ -1,7 +1,6 @@
 """Pydantic Models for RDFIngest."""
 
 import re
-from _pytest._code import source
 
 from pydantic import (
     AnyHttpUrl,
