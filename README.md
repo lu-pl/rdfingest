@@ -1,6 +1,7 @@
 ![<img src="lodkit.png" width=10% height=10%>](https://raw.githubusercontent.com/lu-pl/rdfingest/main/goku_rdf_slurp.png)
 
 # RDFIngest
+![tests](https://github.com/lu-pl/rdfingest/actions/workflows/tests.yaml/badge.svg)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
