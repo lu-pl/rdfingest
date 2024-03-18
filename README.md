@@ -41,7 +41,7 @@ graphs:
     https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_cze.ttl,
     https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_deu.ttl
     ]
-    graph_id: https://somenamedgraph.id
+    graph_id: https://someothernamedgraph.id
     
   # trig; no graph_id required
   - source: <trig source>
@@ -52,7 +52,7 @@ graphs:
     https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_cze.ttl,
     https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_deu.ttl
     ]
-    graph_id: https://somenamedgraph.id
+    graph_id: https://yetanothernamedgraph.id
 ```
 
 For contextless RDF resources all graphs are merged into a named graph identified by `graph_id`.  
