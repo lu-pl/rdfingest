@@ -54,9 +54,11 @@ graphs:
     graph_id: https://somenamedgraph.id
 ```
 
-For contextless RDF resources all graphs are merged into a named graph identified by `graph_id`. Quad formats obviously do not require a `graph_id` field.  
+For contextless RDF resources all graphs are merged into a named graph identified by `graph_id`.  
 
-If the source field references both contextless *and* contextualized RDF sources, contextless sources are merged into a single named graph and added to the initial context graph.  
+[RDF Datasets](https://www.w3.org/TR/rdf11-concepts/#section-dataset)/Quad formats obviously do not require a `graph_id` field. Multiple datasets are merged into a single dataset containing all named graphs of all datasets.__
+
+If the source field references both contextless *and* contextualized RDF sources, contextless sources are merged into a single named graph and added to the dataset.  
 
 The tool accepts both local and remote RDF data sources.
 
