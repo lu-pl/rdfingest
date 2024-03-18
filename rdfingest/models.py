@@ -1,5 +1,8 @@
 """Pydantic Models for RDFIngest."""
 
+import re
+from _pytest._code import source
+
 from pydantic import (
     AnyHttpUrl,
     AnyUrl,
@@ -32,11 +35,12 @@ class RegistryEntry(BaseModel):
     @classmethod
     def _check_trigs(cls, data):
         """Check if a graph_id is defined for non-Trig input."""
-        trig_check = any(
-            str(source).rpartition(".")[-1] != "trig" for source in data.source
+        trig_check = not any(
+            re.match(r".+\.trig\/?", str(source))
+            for source in data.source
         )
 
-        if trig_check and data.graph_id is None:
+        if trig_check and (data.graph_id is None):
             raise InvalidRegistryEntry(
                 """Model field 'graph_id' is required for non-Trig input"""
             )
