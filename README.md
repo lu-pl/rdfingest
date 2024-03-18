@@ -71,6 +71,10 @@ The tool accepts both local and remote RDF data sources.
 Point an `RDFIngest` instance to a config file and a registry and invoke `run_ingest`.
 
 ```python
-rdfingest = RDFIngest(registry="./registry.yaml", config="./config.yaml")
+rdfingest = RDFIngest(
+    registry="./registry.yaml", 
+	config="./config.yaml"
+)
+
 rdfingest.run_ingest()
 ```
