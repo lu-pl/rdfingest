@@ -1,0 +1,9 @@
+graphs: 
+  
+  # multiple ttl to a single named graph
+  - source: [
+    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_cze.ttl,
+    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_deu.ttl
+    ]
+    graph_id: https://somenamedgraph.id
+    

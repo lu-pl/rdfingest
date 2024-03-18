@@ -87,13 +87,7 @@ fail_data_invalid_registry = [
             'https://some.triplestore/repositories/source.ttl',
             ttl_file_path
         ]
-    },
-    {
-        'source': [
-            'https://some.triplestore/repositories/source.ttl',
-            trig_file_path
-        ]
-    },
+    }
 ]
 
 fail_data_validation_error = [

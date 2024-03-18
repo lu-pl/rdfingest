@@ -1,0 +1,6 @@
+graphs:
+  
+  # ttl
+  - source: https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/rem/rem.ttl
+    graph_id: https://somenamedgraph.id
+

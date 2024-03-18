@@ -1,0 +1,23 @@
+graph:
+  
+  # ttl
+  - source: https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/rem/rem.ttl
+    graph_id: https://somenamedgraph.id
+
+  # multiple ttl to a single named graph
+  - source: [
+    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_cze.ttl,
+    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_deu.ttl
+    ]
+    graph_id: https://somenamedgraph.id
+    
+  # trig; no graph_id required
+  - source: https://sometrig.trig
+  
+  # trig + ttl
+  - source: [
+    https://sometrig.trig,
+    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_cze.ttl,
+    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_deu.ttl
+    ]
+    graph_id: https://somenamedgraph.id
