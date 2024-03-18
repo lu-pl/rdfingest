@@ -67,3 +67,10 @@ The tool accepts both local and remote RDF data sources.
 ### CLI
 
 ### RDFIngest class
+
+Invoke `run_ingest` on an `RDFIngest` instance.
+
+```python
+rdfingest = RDFIngest()
+rdfingest.run_ingest()
+```
