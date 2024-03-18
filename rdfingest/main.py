@@ -40,8 +40,7 @@ def main(
     rdfingest = RDFIngest(config=config, registry=registry)
 
     logger.info(f"Running update requests against '{rdfingest.config.service.endpoint}'.")
-    print("Dummy run")
-    # rdfingest.run_ingest()
+    rdfingest.run_ingest()
 
 
 if __name__ == "__main__":
