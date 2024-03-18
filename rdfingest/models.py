@@ -27,8 +27,13 @@ class RegistryEntry(BaseModel):
     @field_validator("source")
     @classmethod
     def _make_source_list(cls, value):
-        """Ensure that the source field holds a list."""
-        return [value] if not isinstance(value, list) else value
+        """Ensure that the source field holds a list + string cast from pydantic_core.Url."""
+        source = (
+            [str(value)]
+            if not isinstance(value, list)
+            else [str(v) for v in value])
+
+        return source
 
     @model_validator(mode="after")
     @classmethod

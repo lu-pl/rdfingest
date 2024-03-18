@@ -9,7 +9,9 @@ from pathlib import Path
 import requests
 
 from loguru import logger
-from rdflib import Dataset, Graph, URIRef
+from rdflib import Dataset, URIRef
+
+from rdfingest.parse_graph import ParseGraph
 
 from rdfingest.yaml_loaders import config_loader, registry_loader
 from rdfingest.models import RegistryModel, ConfigModel
@@ -38,21 +40,21 @@ class RDFIngest:
 
     @staticmethod
     def _construct_named_graph(
-            sources: list[str],
+            source: list[str],
             graph_id: str | None = None
     ) -> Dataset:
         """Construct a named graph from a list of sources."""
         _get_extension = lambda x: str(x).rpartition(".")[-1]
-        _graph_id = URIRef(graph_id) if graph_id is not None else graph_id
+        _graph_id = URIRef(str(graph_id)) if graph_id is not None else graph_id
 
         dataset = Dataset()
-        graph = Graph(identifier=_graph_id)
+        graph = ParseGraph(identifier=_graph_id)
 
-        for source in sources:
-            if _get_extension(source) in ["trig", "trix"]:
-                dataset.parse(source=source)
+        for _source in source:
+            if _get_extension(_source) in ["trig", "trix"]:
+                dataset.parse(source=_source)
             else:
-                graph.parse(source=source)
+                graph.parse(source=_source)
 
         if graph and _graph_id is None:
             logger.info(
