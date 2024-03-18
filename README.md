@@ -2,7 +2,7 @@
 
 # RDFIngest
 ![tests](https://github.com/lu-pl/rdfingest/actions/workflows/tests.yaml/badge.svg)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![license: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 RDFIngest - A simple tool for ingesting local and remote RDF data sources into a triplestore.
