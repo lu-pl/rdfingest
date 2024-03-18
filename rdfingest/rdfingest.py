@@ -88,5 +88,5 @@ class RDFIngest:
             logger.info(f"Constructing named graph for {entry.source}.")
             named_graph = self._construct_named_graph(**dict(entry))
 
-            logger.info(f"Running update request against '{self.config.service.endpoint}'.")
+            logger.info("Updating.")
             self._run_named_graph_update_request(named_graph)
