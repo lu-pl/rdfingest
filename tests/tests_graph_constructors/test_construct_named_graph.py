@@ -4,7 +4,7 @@ import pytest
 
 from rdflib import URIRef, BNode
 
-from rdfingest.rdfingest import RDFIngest
+from rdfingest.ingest import RDFIngest
 
 from tests.tests_graph_constructors.graph_test_data import sources_expected_contexts_mapping
 
