@@ -73,7 +73,7 @@ Point an `RDFIngest` instance to a config file and a registry and invoke `run_in
 ```python
 rdfingest = RDFIngest(
     registry="./registry.yaml", 
-config="./config.yaml"
+    config="./config.yaml"
 )
 
 rdfingest.run_ingest()
