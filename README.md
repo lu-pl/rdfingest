@@ -38,8 +38,8 @@ graphs:
 
   # multiple ttl to a single named graph
   - source: [
-	somelocal.ttl,
-	https://someotherremote.ttl
+    somelocal.ttl,
+    https://someotherremote.ttl
     ]
     graph_id: https://someothernamedgraph.id
     
@@ -48,9 +48,9 @@ graphs:
   
   # trig + ttl
   - source: [
-	https://someotherremote.trig,
-	someotherlocal.ttl,
-	yetanotherremote.ttl	
+    https://someotherremote.trig,
+    someotherlocal.ttl,
+    yetanotherremote.ttl	
     ]
     graph_id: https://yetanothernamedgraph.id
 ```
