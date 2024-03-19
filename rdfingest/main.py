@@ -15,6 +15,7 @@ def main(
         config: Annotated[
             Path,
             typer.Option(
+                "--config", "-c",
                 help=config_help,
                 exists=True,
                 file_okay=True,
@@ -26,6 +27,7 @@ def main(
         registry: Annotated[
             Path,
             typer.Option(
+                "--registry", "-r",
                 help=registry_help,
                 exists=True,
                 file_okay=True,
