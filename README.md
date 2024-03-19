@@ -33,24 +33,24 @@ service:
 graphs:
   
   # ttl
-  - source: https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/rem/rem.ttl
+  - source: https://someremote.ttl
     graph_id: https://somenamedgraph.id
 
   # multiple ttl to a single named graph
   - source: [
-    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_cze.ttl,
-    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_deu.ttl
+	somelocal.ttl,
+	https://someotherremote.ttl
     ]
     graph_id: https://someothernamedgraph.id
     
   # trig; no graph_id required
-  - source: <trig source>
+  - source: https://someremote.trig
   
   # trig + ttl
   - source: [
-    <trig source>,
-    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_cze.ttl,
-    https://raw.githubusercontent.com/lu-pl/clscorgi/main/clscorgi/output/eltec/eltec_deu.ttl
+	https://someotherremote.trig,
+	someotherlocal.ttl,
+	yetanotherremote.ttl	
     ]
     graph_id: https://yetanothernamedgraph.id
 ```
@@ -65,6 +65,15 @@ If the source field references both contextless *and* contextualized RDF sources
 The tool accepts both local and remote RDF data sources.
 
 ### CLI
+Run the `rdfingest` command.
+
+```shell
+rdfingest --config ./config.yaml --registry ./registry.yaml
+```
+
+Default values for config and registry are `./config.yaml` and `registry.yaml`.
+
+Also see `rdfingest --help`.
 
 ### RDFIngest class
 
