@@ -35,31 +35,31 @@ def test_cli_fail_no_files(flags):
     assert result.exit_code == 2
 
 
-@pytest.fixture()
-def mock_rdfingest():
-    """Fixture that provides a RDFIngest instance mock."""
-    with mock.patch.object(ingest, "RDFIngest") as MockRDFIngest:
-        yield MockRDFIngest.return_value
+# @pytest.fixture()
+# def mock_rdfingest():
+#     """Fixture that provides a RDFIngest instance mock."""
+#     with mock.patch.object(ingest, "RDFIngest") as MockRDFIngest:
+#         yield MockRDFIngest.return_value
 
 
-@pytest.fixture()
-def mock_requests_post():
-    """Fixture that provides a requests.post mock."""
-    def _mocked_post(url, **kwargs):
-        kwargs.update({"url": url})
-        return kwargs
+# @pytest.fixture()
+# def mock_requests_post():
+#     """Fixture that provides a requests.post mock."""
+#     def _mocked_post(url, **kwargs):
+#         kwargs.update({"url": url})
+#         return kwargs
 
-    with mock.patch("requests.post") as mock_post:
-        mock_post.return_value = _mocked_post
-        result = runner.invoke(app, ["-c", "./test_config.yaml", "-r" "./test_registry.yaml"])
+#     with mock.patch("requests.post") as mock_post:
+#         mock_post.return_value = _mocked_post
+#         result = runner.invoke(app, ["-c", "./test_config.yaml", "-r" "./test_registry.yaml"])
 
-        print("INFO: ", result.exit_code)
-        print(f"INFO: {mock_post.called}")
-        print(f"INFO: {mock_post.assert_called_with('')}")
+#         print("INFO: ", result.exit_code)
+#         print(f"INFO: {mock_post.called}")
+#         print(f"INFO: {mock_post.assert_called_with('')}")
 
 
-def test_fun(mock_requests_post):
-    pass
+# def test_fun(mock_requests_post):
+#     pass
 
 
 # def test_cli_rdfingest_object(mock_rdfingest):
