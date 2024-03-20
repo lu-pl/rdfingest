@@ -11,6 +11,10 @@ from rdfingest.cli_help import config_help, registry_help
 from rdfingest.ingest import RDFIngest
 
 
+app = typer.Typer()
+
+
+@app.command()
 def main(
         config: Annotated[
             Path,
@@ -49,4 +53,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    app()
