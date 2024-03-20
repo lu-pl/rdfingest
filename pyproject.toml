@@ -5,6 +5,9 @@ description = ""
 authors = ["Lukas Plank <lupl@tuta.io>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+rdfingest = "rdfingest.main:main"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 pydantic = "^2.6.4"
