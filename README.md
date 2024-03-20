@@ -14,6 +14,17 @@ RDFIngest - A simple tool for ingesting local and remote RDF data sources into a
 * Python >= 3.11
 
 ## Installation
+RDFIngest is availabe on PyPI:
+```shell
+pip install rdfingest
+```
+
+Also the RDFIngest CLI can be installed with [pipx](https://pypa.github.io/pipx/):
+```shell
+pipx install rdfingest
+```
+
+For installation from source either use [poetry](https://python-poetry.org/) or run `pip install .` from the package folder.
 
 ## Usage
 
