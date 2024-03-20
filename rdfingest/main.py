@@ -37,7 +37,10 @@ def main(
             )
         ] = Path("./registry.yaml")
 ):
-    """RDFIngest CLI."""
+    """RDFIngest CLI.
+
+    Ingest local and remote RDF data sources into a triplestore.
+    """
     logger.info("Initializing RDFIngest.")
     rdfingest = RDFIngest(config=config, registry=registry)
 
