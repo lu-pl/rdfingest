@@ -102,14 +102,12 @@ class RDFIngest:
         Note: This is used as a side-effects only callable.
         """
         auth: tuple[str, str] = self.config.service.user, self.config.service.password
-        # compressed = gzip.compress(named_graph.serialize(format="trig").encode("utf-8"))
+        compressed = gzip.compress(named_graph.serialize(format="trig").encode("utf-8"))
 
         response = requests.post(
             url=str(self.config.service.endpoint),
-            # headers={"Content-Type": "application/x-trig", "Content-Encoding": "gzip"},
-            headers={"Content-Type": "application/x-trig"},
-            # data=compressed,
-            data=named_graph.serialize(format="trig"),
+            headers={"Content-Type": "application/x-trig", "Content-Encoding": "gzip"},
+            data=compressed,
             auth=auth
         )
 
