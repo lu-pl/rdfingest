@@ -11,6 +11,7 @@ from http import HTTPStatus
 
 import requests
 
+from SPARQLWrapper import SPARQLWrapper, DIGEST, POST
 from loguru import logger
 from rdflib import Dataset, URIRef
 
@@ -35,11 +36,13 @@ class RDFIngest:
     def __init__(
             self,
             registry: str | Path = "./registry.yaml",
-            config: str | Path = "./config.yaml"
+            config: str | Path = "./config.yaml",
+            drop=False
     ) -> None:
         """RDFIngester initializer."""
         self.registry: RegistryModel = registry_loader(registry)
         self.config: ConfigModel = config_loader(config)
+        self._drop = drop
 
     @staticmethod
     def _construct_named_graph(
@@ -73,10 +76,25 @@ class RDFIngest:
         """Log the response.status_code either with loglevel 'info' or 'warning'."""
         log_level: str = "info" if (200 <= response.status_code <= 299) else "warning"
         log_method: Callable = getattr(logger, log_level)
-        log_message: str = f"HTTP status code {response.status_code} ('{HTTPStatus(response.status_code).phrase}')."
+        log_message: str = (
+            f"HTTP status code {response.status_code} "
+            f"('{HTTPStatus(response.status_code).phrase}')."
+        )
 
         log_method(log_message)
 
+
+    def _run_sparql_drop(self, graph_id: str):
+        """Run a SPARQL CLEAR request for a named graph against the configured triplestore."""
+        sparql = SPARQLWrapper(self.config.service.endpoint)
+        sparql.setHTTPAuth(DIGEST)
+        sparql.setCredentials(
+            self.config.service.user,
+            self.config.service.password
+        )
+        sparql.setMethod(POST)
+
+        sparql.setQuery(f"CLEAR GRAPH {graph_id}")
 
     def _run_named_graph_update_request(self, named_graph: Dataset) -> requests.Response:
         """Execute a POST request for a named graph against the config store.
@@ -84,12 +102,14 @@ class RDFIngest:
         Note: This is used as a side-effects only callable.
         """
         auth: tuple[str, str] = self.config.service.user, self.config.service.password
-        compressed = gzip.compress(named_graph.serialize(format="trig").encode("utf-8"))
+        # compressed = gzip.compress(named_graph.serialize(format="trig").encode("utf-8"))
 
         response = requests.post(
             url=str(self.config.service.endpoint),
-            headers={"Content-Type": "application/x-trig", "Content-Encoding": "gzip"},
-            data=compressed,
+            # headers={"Content-Type": "application/x-trig", "Content-Encoding": "gzip"},
+            headers={"Content-Type": "application/x-trig"},
+            # data=compressed,
+            data=named_graph.serialize(format="trig"),
             auth=auth
         )
 
@@ -104,6 +124,10 @@ class RDFIngest:
         and executes a POST request against the config store.
         """
         for entry in self.registry.graphs:
+            if self._drop:
+                logger.info(f"Running SPARQL DROP operation for graph {entry.graph_id}")
+                self._run_sparql_drop(str(entry.graph_id))
+
             logger.info(f"Constructing named graph for {entry.source}.")
             named_graph = self._construct_named_graph(**dict(entry))
 
