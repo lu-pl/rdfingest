@@ -1,6 +1,9 @@
 notes.org
 scratch.py
 
+*config.yaml
+*registry.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
