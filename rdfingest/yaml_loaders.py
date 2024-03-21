@@ -26,8 +26,8 @@ def yaml_loader(path: str | Path, model: type[ModelType]) -> ModelType:
 
     try:
         data = model(**_data)
-    except (ValidationError, InvalidRegistryEntry):
-        raise YAMLValidationError
+    except (ValidationError, InvalidRegistryEntry) as e:
+        raise YAMLValidationError(e)
 
     return data
 
