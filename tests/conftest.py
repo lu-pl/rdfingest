@@ -1,3 +1,7 @@
+from unittest import mock
+
+from rdfingest import ingest
+
 import pytest
 from loguru import logger
 from _pytest.logging import LogCaptureFixture
@@ -17,3 +21,10 @@ def caplog(caplog: LogCaptureFixture):
         enqueue=False,  # Set to 'True' if your test is spawning child processes.
     )
     yield caplog
+
+
+@pytest.fixture()
+def mock_rdfingest():
+    """Fixture that provides a RDFIngest instance mock."""
+    with mock.patch.object(ingest, "RDFIngest") as MockRDFIngest:
+        yield MockRDFIngest.return_value
