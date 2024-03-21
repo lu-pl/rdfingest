@@ -3,8 +3,11 @@
 Automatically ingest local and/or remote RDF data sources indicated in a YAML registry into a triplestore.
 """
 
-from inspect import stack
+import gzip
+
+from collections.abc import Callable
 from pathlib import Path
+from http import HTTPStatus
 
 import requests
 
@@ -65,19 +68,33 @@ class RDFIngest:
         dataset.graph(graph)
         return dataset
 
+    @staticmethod
+    def _log_status_code(response: requests.Response) -> None:
+        """Log the response.status_code either with loglevel 'info' or 'warning'."""
+        log_level: str = "info" if (200 <= response.status_code <= 299) else "warning"
+        log_method: Callable = getattr(logger, log_level)
+        log_message: str = f"HTTP status code {response.status_code} ('{HTTPStatus(response.status_code).phrase}')."
+
+        log_method(log_message)
+
+
     def _run_named_graph_update_request(self, named_graph: Dataset) -> requests.Response:
         """Execute a POST request for a named graph against the config store.
 
         Note: This is used as a side-effects only callable.
         """
         auth: tuple[str, str] = self.config.service.user, self.config.service.password
+        compressed = gzip.compress(named_graph.serialize(format="trig").encode("utf-8"))
 
         response = requests.post(
-            self.config.service.endpoint,
-            headers={"Content-Type": "application/x-trig"},
-            data=named_graph.serialize(format="trig"),
+            url=str(self.config.service.endpoint),
+            headers={"Content-Type": "application/x-trig", "Content-Encoding": "gzip"},
+            data=compressed,
             auth=auth
         )
+
+        self._log_status_code(response)
+
         return response
 
     def run_ingest(self) -> None:
