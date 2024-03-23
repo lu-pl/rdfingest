@@ -19,6 +19,11 @@ from rdfingest.parse_graph import ParseGraph
 
 from rdfingest.yaml_loaders import config_loader, registry_loader
 from rdfingest.models import RegistryModel, ConfigModel
+from rdfingest.ingest_strategies import (
+    gzip_strategy,
+    serialize_strategy,
+    semantic_chunk_strategy
+)
 
 
 class RDFIngest:
@@ -83,37 +88,33 @@ class RDFIngest:
 
         log_method(log_message)
 
-
-    def _run_sparql_drop(self, graph_id: str):
+    def _run_sparql_drop(self, graph_id: str) -> None:
         """Run a SPARQL CLEAR request for a named graph against the configured triplestore."""
         sparql = SPARQLWrapper(self.config.service.endpoint)
-        sparql.setHTTPAuth(DIGEST)
         sparql.setCredentials(
             self.config.service.user,
             self.config.service.password
         )
         sparql.setMethod(POST)
+        sparql.setQuery(f"CLEAR GRAPH <{graph_id}>")
 
-        sparql.setQuery(f"CLEAR GRAPH {graph_id}")
+        results = sparql.query()
+        logger.info(f"SPARQL response: {results.response.code}")
 
     def _run_named_graph_update_request(self, named_graph: Dataset) -> requests.Response:
         """Execute a POST request for a named graph against the config store.
 
         Note: This is used as a side-effects only callable.
         """
+        endpoint = str(self.config.service.endpoint)
         auth: tuple[str, str] = self.config.service.user, self.config.service.password
-        compressed = gzip.compress(named_graph.serialize(format="trig").encode("utf-8"))
 
-        response = requests.post(
-            url=str(self.config.service.endpoint),
-            headers={"Content-Type": "application/x-trig", "Content-Encoding": "gzip"},
-            data=compressed,
-            auth=auth
-        )
+        for strategy in (gzip_strategy, serialize_strategy, semantic_chunk_strategy):
+            response = strategy(named_graph, endpoint, auth)
+            self._log_status_code(response)
 
-        self._log_status_code(response)
-
-        return response
+            if response.status_code > 199 and response.status_code < 300:
+                return response
 
     def run_ingest(self) -> None:
         """Run RDF source ingest against a triplestore.
