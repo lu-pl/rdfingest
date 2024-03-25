@@ -9,6 +9,8 @@
 
 RDFIngest - A simple tool for ingesting local and remote RDF data sources into a triplestore.
 
+> WARNING: This project is in an early stage of development and should be used with caution.
+
 ## Requirements
 
 * Python >= 3.11
