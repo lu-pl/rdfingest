@@ -86,6 +86,8 @@ class RDFIngest:
             f"('{HTTPStatus(response.status_code).phrase}')."
         )
 
+        print("DEBUG: ", response.content)
+
         log_method(log_message)
 
     def _run_sparql_drop(self, graph_id: str) -> None:
@@ -109,7 +111,8 @@ class RDFIngest:
         endpoint = str(self.config.service.endpoint)
         auth: tuple[str, str] = self.config.service.user, self.config.service.password
 
-        for strategy in (gzip_strategy, serialize_strategy, semantic_chunk_strategy):
+        # for strategy in (serialize_strategy, gzip_strategy):
+        for strategy in (gzip_strategy, serialize_strategy):
             response = strategy(named_graph, endpoint, auth)
             self._log_status_code(response)
 
