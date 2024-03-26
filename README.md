@@ -1,4 +1,4 @@
-![<img src="lodkit.png" width=10% height=10%>](https://raw.githubusercontent.com/lu-pl/rdfingest/main/goku_rdf_slurp.png)
+![<img src="goku_rdf_slurp.png" width=10% height=10%>](https://raw.githubusercontent.com/lu-pl/rdfingest/main/goku_rdf_slurp.png)
 
 # RDFIngest
 ![tests](https://github.com/lu-pl/rdfingest/actions/workflows/tests.yaml/badge.svg)
