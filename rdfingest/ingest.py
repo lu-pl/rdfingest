@@ -54,7 +54,7 @@ class RDFIngest:
         """RDFIngester initializer."""
         self.registry: RegistryModel = registry_loader(registry)
         self.config: ConfigModel = config_loader(config)
-        self._drop = drop,
+        self._drop = drop
         self._debug = debug
         self._strategies = strategies
 
@@ -153,20 +153,29 @@ class RDFIngest:
         return response
 
     def run_ingest(self) -> None:
-        """Run RDF source ingest against a triplestore.
+        """Run ingest operations for RDF sources.
 
+        Parse graphs from a registry, optionally run DROP operations
+        and POST graph data to the specified triplestore.
         """
         for entry in self.registry.graphs:
             logger.info(f"Parsing graphs for {entry.source}.")
-            graphs = self._parse_entry_sources(
-                source=entry.source,  # type: ignore ; see source field validator
-                graph_id=entry.graph_id
+
+            graphs = list(
+                self._parse_entry_sources(
+                    source=entry.source,  # type: ignore ; see source field validator
+                    graph_id=entry.graph_id
+                )
             )
 
-            for graph in graphs:
-                if self._drop:
-                    logger.info(f"Running SPARQL DROP operation for named graph {graph.identifier}")
-                    self._run_sparql_drop(graph.identifier)
+            if self._drop:
+                for graph_id in set(g.identifier for g in graphs):
+                    logger.info(
+                        "Running SPARQL DROP operation for named graph " +
+                        str(graph_id)
+                    )
+                    self._run_sparql_drop(graph_id)
 
+            for graph in graphs:
                 dataset = self._get_dataset_from_graph(graph)
                 self._run_named_graph_update_request(dataset)
