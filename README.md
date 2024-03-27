@@ -83,16 +83,15 @@ Consider the following entry:
 ```yaml
 graphs:
  - source: [
-    https://someotherremote.trig,
-    someotherlocal.ttl,
-    yetanotherremote.ttl	
+    https://someremote.trig,
+    somelocal.ttl,
+    anotherremote.ttl	
     ]
-    graph_id: https://yetanothernamedgraph.id
+    graph_id: https://somenamedgraph.id/
 ```
 
-In this case every named graph in `https://someotherremote.trig` 
-
-and the contextless RDF sources `someotherlocal.ttl` and `yetanotherremote.ttl` are 
+In this case every named graph in the Dataset `https://someremote.trig` is ingested using their respective named graph identifiers,
+`somelocal.ttl` and `anotherremote.ttl` are ingested into a named graph `https://somenamedgraph.id/`.
 
 
 ### CLI
