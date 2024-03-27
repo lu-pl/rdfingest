@@ -45,22 +45,17 @@ service:
 #### Example registry:
 ```yaml
 graphs:
-  
-  # ttl
   - source: https://someremote.ttl
     graph_id: https://somenamedgraph.id
 
-  # multiple ttl to a single named graph
   - source: [
     somelocal.ttl,
     https://someotherremote.ttl
     ]
     graph_id: https://someothernamedgraph.id
     
-  # trig; no graph_id required
   - source: https://someremote.trig
   
-  # trig + ttl
   - source: [
     https://someotherremote.trig,
     someotherlocal.ttl,
@@ -69,14 +64,16 @@ graphs:
     graph_id: https://yetanothernamedgraph.id
 ```
 
-For contextless RDF resources all graphs are merged into a named graph identified by `graph_id`.  
+RDFIngest parses all registered RDF sources and ingests the data as named graphs into the specified triplestore by executing POST requests for every source.  
+By default also a SPARQL DROP operation is run for every Graph ID before POSTing.  
 
-[RDF Datasets](https://www.w3.org/TR/rdf11-concepts/#section-dataset)/Quad formats obviously do not require a `graph_id` field.  
-Multiple datasets are merged into a single dataset containing all named graphs of all datasets.  
+For contextless RDF sources a `graph_id` is required, [RDF Datasets](https://www.w3.org/TR/rdf11-concepts/#section-dataset)/Quad formats obviously do not require a `graph_id` field.  
 
-If the source field references both contextless *and* contextualized RDF sources, contextless sources are merged into a single named graph and added to the dataset.  
+For Datasets, the default graph (at least for now) is ignored. Running automated DROP and/or POST operations on a remote default graph is considered somewhat dangerous. 
+> Namespaces are one honking great idea -- let's do more of those!"
 
 The tool accepts both local and remote RDF data sources.
+
 
 ### CLI
 Run the `rdfingest` command.
@@ -97,6 +94,8 @@ Point an `RDFIngest` instance to a config file and a registry and invoke `run_in
 rdfingest = RDFIngest(
     config="./config.yaml"
     registry="./registry.yaml", 
+	drop=True,
+	debug=False
 )
 
 rdfingest.run_ingest()
