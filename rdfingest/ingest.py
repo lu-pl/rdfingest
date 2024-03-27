@@ -28,6 +28,10 @@ from rdfingest.ingest_strategies import (
 )
 
 
+class BNodeIDException(Exception):
+    """Exception for indicating that a Graph has a Bnode ID."""
+
+
 class RDFIngest:
     """RDFIngest class.
 
@@ -102,7 +106,7 @@ class RDFIngest:
         BNode identifiers are not allowed.
         """
         if isinstance(graph.identifier, BNode):
-            raise Exception(f"BNode identifier: {graph.identifier}.")
+            raise BNodeIDException(f"Graph object '{graph}' has BNode identifier.")
 
         dataset = Dataset()
         dataset.graph(graph)
