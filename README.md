@@ -73,7 +73,26 @@ For contextless RDF sources a `graph_id` is required, [RDF Datasets](https://www
 For Datasets, the default graph (at least for now) is ignored. Running automated DROP and/or POST operations on a remote default graph is considered somewhat dangerous. 
 > Namespaces are one honking great idea -- let's do more of those!
 
-The tool accepts both local and remote RDF data sources.
+The tool accepts both local and remote RDF data sources.  
+
+
+#### Entry example
+
+Consider the following entry:
+
+```yaml
+graphs:
+ - source: [
+    https://someotherremote.trig,
+    someotherlocal.ttl,
+    yetanotherremote.ttl	
+    ]
+    graph_id: https://yetanothernamedgraph.id
+```
+
+In this case every named graph in `https://someotherremote.trig` 
+
+and the contextless RDF sources `someotherlocal.ttl` and `yetanotherremote.ttl` are 
 
 
 ### CLI
