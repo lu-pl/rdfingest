@@ -65,12 +65,13 @@ graphs:
 ```
 
 RDFIngest parses all registered RDF sources and ingests the data as named graphs into the specified triplestore by executing POST requests for every source.  
+
 By default also a SPARQL DROP operation is run for every Graph ID before POSTing.  
 
 For contextless RDF sources a `graph_id` is required, [RDF Datasets](https://www.w3.org/TR/rdf11-concepts/#section-dataset)/Quad formats obviously do not require a `graph_id` field.  
 
 For Datasets, the default graph (at least for now) is ignored. Running automated DROP and/or POST operations on a remote default graph is considered somewhat dangerous. 
-> Namespaces are one honking great idea -- let's do more of those!"
+> Namespaces are one honking great idea -- let's do more of those!
 
 The tool accepts both local and remote RDF data sources.
 
@@ -82,7 +83,7 @@ Run the `rdfingest` command.
 rdfingest --config ./config.yaml --registry ./registry.yaml
 ```
 
-Default values for config and registry are `./config.yaml` and `registry.yaml`.
+Default values for config and registry are `./config.yaml` and `./registry.yaml`.
 
 Also see `rdfingest --help`.
 
