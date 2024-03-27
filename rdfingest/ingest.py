@@ -5,7 +5,7 @@ Automatically ingest local and/or remote RDF data sources indicated in a YAML re
 
 import gzip
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable, Iterator
 from pathlib import Path
 from http import HTTPStatus
 
@@ -13,7 +13,8 @@ import requests
 
 from SPARQLWrapper import SPARQLWrapper, DIGEST, POST
 from loguru import logger
-from rdflib import Dataset, URIRef
+from rdflib import BNode, Dataset, Graph, URIRef
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 from rdfingest.parse_graph import ParseGraph
 
@@ -22,7 +23,8 @@ from rdfingest.models import RegistryModel, ConfigModel
 from rdfingest.ingest_strategies import (
     gzip_strategy,
     serialize_strategy,
-    semantic_chunk_strategy
+    semantic_chunk_strategy,
+    UpdateStrategy
 )
 
 
@@ -42,42 +44,71 @@ class RDFIngest:
             self,
             registry: str | Path = "./registry.yaml",
             config: str | Path = "./config.yaml",
-            drop=False
+            drop: bool = True,
+            debug: bool = False,
+            strategies: tuple[UpdateStrategy, ...] = (
+                serialize_strategy,
+                gzip_strategy
+            )
     ) -> None:
         """RDFIngester initializer."""
         self.registry: RegistryModel = registry_loader(registry)
         self.config: ConfigModel = config_loader(config)
-        self._drop = drop
+        self._drop = drop,
+        self._debug = debug
+        self._strategies = strategies
+
 
     @staticmethod
-    def _construct_named_graph(
+    def _parse_entry_sources(
             source: list[str],
             graph_id: str | None = None
-    ) -> Dataset:
-        """Construct a named graph from a list of sources."""
-        _get_extension = lambda x: str(x).rpartition(".")[-1]
-        _graph_id = URIRef(str(graph_id)) if graph_id is not None else graph_id
+    ) -> Iterator[Graph]:
+        """Parse entry sources and generate contextualized Graphs.
 
-        dataset = Dataset()
-        graph = ParseGraph(identifier=_graph_id)
+        For contextless RDF sources, graph_id specified in registry.yaml is assigned,
+        for contextualized RDF sources, the Dataset is split into separate graphs.
+
+        Note that (at least for now) the default graph of Datasets is ignored.
+        Named graphs are a good thing, performing automated POST/DROP operations
+        on a remote default graph seems inadvisable.
+        """
+        _get_extension = lambda x: str(x).rpartition(".")[-1]
+        _default_graph_id = DATASET_DEFAULT_GRAPH_ID
+        _graph_id = (
+            URIRef(str(graph_id))
+            if graph_id is not None
+            else graph_id
+        )
 
         for _source in source:
-            if _get_extension(_source) in ["trig", "trix"]:
-                dataset.parse(source=_source)
+            if (extension := _get_extension(_source)) in ("trig", "trix"):
+                dataset = Dataset()
+                dataset.parse(source=_source, format=extension)
+                yield from filter(
+                    lambda g: g.identifier != _default_graph_id,
+                    dataset.contexts()
+                )
             else:
+                graph = ParseGraph(identifier=_graph_id)
                 graph.parse(source=_source)
+                yield graph
 
-        if graph and _graph_id is None:
-            logger.info(
-                "Parameter 'graph_id' not specified. "
-                "Named graph identifier will be a blank node."
-            )
+    @staticmethod
+    def _get_dataset_from_graph(graph: Graph) -> Dataset:
+        """Get a single context dataset from a Graph.
 
+        Graph should have an identifier explicitly defined,
+        BNode identifiers are not allowed.
+        """
+        if isinstance(graph.identifier, BNode):
+            raise Exception(f"BNode identifier: {graph.identifier}.")
+
+        dataset = Dataset()
         dataset.graph(graph)
         return dataset
 
-    @staticmethod
-    def _log_status_code(response: requests.Response) -> None:
+    def _log_status_code(self, response: requests.Response) -> None:
         """Log the response.status_code either with loglevel 'info' or 'warning'."""
         log_level: str = "info" if (200 <= response.status_code <= 299) else "warning"
         log_method: Callable = getattr(logger, log_level)
@@ -86,9 +117,10 @@ class RDFIngest:
             f"('{HTTPStatus(response.status_code).phrase}')."
         )
 
-        print("DEBUG: ", response.content)
-
         log_method(log_message)
+
+        if self._debug:
+            logger.debug(response.content)
 
     def _run_sparql_drop(self, graph_id: str) -> None:
         """Run a SPARQL CLEAR request for a named graph against the configured triplestore."""
@@ -98,8 +130,8 @@ class RDFIngest:
             self.config.service.password
         )
         sparql.setMethod(POST)
-        sparql.setQuery(f"CLEAR GRAPH <{graph_id}>")
 
+        sparql.setQuery(f"CLEAR GRAPH <{graph_id}>")
         results = sparql.query()
         logger.info(f"SPARQL response: {results.response.code}")
 
@@ -111,27 +143,30 @@ class RDFIngest:
         endpoint = str(self.config.service.endpoint)
         auth: tuple[str, str] = self.config.service.user, self.config.service.password
 
-        # for strategy in (serialize_strategy, gzip_strategy):
-        for strategy in (gzip_strategy, serialize_strategy):
+        for strategy in self._strategies:
             response = strategy(named_graph, endpoint, auth)
             self._log_status_code(response)
 
             if response.status_code > 199 and response.status_code < 300:
                 return response
 
+        return response
+
     def run_ingest(self) -> None:
         """Run RDF source ingest against a triplestore.
 
-        The method constructs named graphs based on Registry entries
-        and executes a POST request against the config store.
         """
         for entry in self.registry.graphs:
-            if self._drop:
-                logger.info(f"Running SPARQL DROP operation for graph {entry.graph_id}")
-                self._run_sparql_drop(str(entry.graph_id))
+            logger.info(f"Parsing graphs for {entry.source}.")
+            graphs = self._parse_entry_sources(
+                source=entry.source,  # type: ignore ; see source field validator
+                graph_id=entry.graph_id
+            )
 
-            logger.info(f"Constructing named graph for {entry.source}.")
-            named_graph = self._construct_named_graph(**dict(entry))
+            for graph in graphs:
+                if self._drop:
+                    logger.info(f"Running SPARQL DROP operation for named graph {graph.identifier}")
+                    self._run_sparql_drop(graph.identifier)
 
-            logger.info("Updating.")
-            self._run_named_graph_update_request(named_graph)
+                dataset = self._get_dataset_from_graph(graph)
+                self._run_named_graph_update_request(dataset)
