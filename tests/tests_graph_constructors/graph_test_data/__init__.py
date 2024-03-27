@@ -15,12 +15,12 @@ ecrm_rdf = _data_path / "ecrm.rdf"
 sources_expected_contexts_mapping = [
     ([ttl1], 1),
     ([ttl2], 1),
-    ([trig1], 4),
-    ([trig2], 4),
-    ([ttl1, ttl2], 1),
-    ([trig1, trig2], 7),
+    ([trig1], 3),
+    ([trig2], 3),
+    ([ttl1, ttl2], 2),
+    ([trig1, trig2], 6),
     ([trig1, ttl1], 4),
     ([ttl2, trig2], 4),
-    ([ttl1, trig1, ttl2], 4),
-    ([ttl1, ttl2, trig1, trig2], 7),
+    ([ttl1, trig1, ttl2], 5),
+    ([ttl1, ttl2, trig1, trig2], 8),
 ]

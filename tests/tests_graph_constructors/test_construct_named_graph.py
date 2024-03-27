@@ -9,52 +9,38 @@ from rdfingest.ingest import RDFIngest
 from tests.tests_graph_constructors.graph_test_data import sources_expected_contexts_mapping
 
 
-class TestConstructNamedGraph:
-    """Test container for RDFIngest._construct_named_graph."""
+class TestParseEntrySources:
+    """Test container for RDFIngest._parse_entry_sources."""
 
     @pytest.mark.parametrize(
         ["sources", "expected"],
         sources_expected_contexts_mapping
     )
-    def test_number_named_graphs(self, sources, expected):
-        """Invoke RDFIngest._construct_named_graph on various sources
-        and check the number of context graphs in the named graph.
-
-        Note: For trig only content an additional empty graph is generated if graph_id is given.
-        Should this be handled in RDFIngest or not?
-        """
-        expected += 1  # default graph
-        sources = [str(source) for source in sources]
-
-        named_graph = RDFIngest._construct_named_graph(
-            sources, URIRef("https://testnamegraph.id")
+    def test_parse_entry_sources_count_graphs(self, sources, expected):
+        """Run RDFIngest._parse_entry_sources and count the generated context graphs."""
+        graphs = RDFIngest._parse_entry_sources(
+            source=sources,
+            graph_id="https://test.graph/test/"
         )
 
-        contexts = list(named_graph.contexts())
-
-        assert len(contexts) == expected
+        len_graphs = len(list(graphs))
+        assert len_graphs == expected
 
 
     @pytest.mark.parametrize(
         "sources",
         map(lambda x: x[0], sources_expected_contexts_mapping)
     )
-    def test_no_bnodes(self, sources):
-        """Check for BNodes as graph identifiers."""
-        sources = [str(source) for source in sources]
-
-        named_graph = RDFIngest._construct_named_graph(
-            sources, URIRef("https://testnamegraph.id")
+    def test_parse_entry_sources_no_bnodes(self, sources):
+        """Run RDFIngest._parse_entry_sources and check if there are any BNodes."""
+        graphs = RDFIngest._parse_entry_sources(
+            source=sources,
+            graph_id="https://test.graph/test/"
         )
 
-        context_identifiers = [
-            context.identifier  # type: ignore
-            for context in named_graph.contexts()
-        ]
-
-        no_bnodes_p = not any(
-            isinstance(identifier, BNode)
-            for identifier in context_identifiers
+        bnode_identifiers = any(
+            isinstance(g.identifier, BNode)
+            for g in graphs
         )
 
-        assert no_bnodes_p
+        assert not bnode_identifiers
