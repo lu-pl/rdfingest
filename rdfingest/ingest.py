@@ -167,8 +167,8 @@ class RDFIngest:
 
             graphs = list(
                 self._parse_entry_sources(
-                    source=entry.source,  # type: ignore ; see source field validator
-                    graph_id=entry.graph_id
+                    source=entry.source,     # type: ignore ; see source field validator
+                    graph_id=entry.graph_id  # type: ignore ; see source field validator
                 )
             )
 
