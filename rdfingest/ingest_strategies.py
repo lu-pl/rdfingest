@@ -10,6 +10,8 @@ from typing import TypeAlias
 from loguru import logger
 from rdflib import Dataset
 
+from rdfingest.utils.semantic_chunking import semantic_chunk_dataset
+
 
 UpdateStrategy: TypeAlias = Callable[
     [Dataset, str, tuple[str, str]],
@@ -29,7 +31,7 @@ def serialize_strategy(
     response = requests.post(
         url=endpoint,
         headers={"Content-Type": "application/x-trig"},
-        data=named_graph.serialize(format="trig"),
+        data=named_graph.serialize(format="trig").encode("utf-8"),
         auth=auth,
         stream=True
     )
@@ -63,7 +65,17 @@ def semantic_chunk_strategy(
         auth: tuple[str, str]
 ) -> requests.Response:
     """Chunk post strategy."""
-    #### note: This needs to do "semantic chunking".
-    #### i.e. for every graph in a Dataset POST a set of triple chunks
-    #### this can utilize serialize_post_strategy!
-    pass
+    logger.info("Running 'Semantic Chunk' strategy")
+
+    chunk_datasets = semantic_chunk_dataset(named_graph, triple_chunk_size=1000)
+
+    for chunk in chunk_datasets:
+        response = serialize_strategy(
+            named_graph=chunk,
+            endpoint=endpoint,
+            auth=auth
+        )
+
+        # todo: response.status_code handling
+
+    return response
