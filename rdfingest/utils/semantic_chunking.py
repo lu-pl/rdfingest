@@ -33,7 +33,7 @@ def semantic_chunk_graph(
         yield g
 
 
-def semantic_chunks_dataset(
+def semantic_chunk_dataset(
         dataset: Dataset,
         triple_chunk_size: int = 1000,
         skolem_basepath: str | URIRef | None = None
@@ -52,7 +52,7 @@ def semantic_chunks_dataset(
     for graph in dataset.contexts():
         chunk_graphs = semantic_chunk_graph(
             graph=graph,
-            triple_chunk_size=triple_chunk_size
+            triple_chunk_size=triple_chunk_size,
             skolem_basepath=skolem_basepath
         )
 
