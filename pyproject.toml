@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdfingest"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Lukas Plank <lupl@tuta.io>"]
 readme = "README.md"
